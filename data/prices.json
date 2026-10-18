@@ -1,0 +1,9 @@
+{
+  "_note": "EXAMPLE PRICES ONLY. Illustrative numbers, not real quotes from any cloud provider.",
+  "hours_per_month": 730,
+  "compute_per_hour": {"small": 0.02, "medium": 0.05, "large": 0.10, "xlarge": 0.20},
+  "storage_gb_month": {"standard": 0.02, "archive": 0.004},
+  "database_per_hour": {"small": 0.03, "medium": 0.08, "large": 0.17},
+  "load_balancer_month": 18.0,
+  "data_transfer_gb": 0.08
+}

@@ -1,0 +1,8 @@
+resources:
+  - {type: compute, size: medium, count: 3}
+  - {type: compute, size: small, count: 2, hours_per_month: 200}
+  - {type: storage, tier: standard, gb: 500}
+  - {type: storage, tier: archive, gb: 2000}
+  - {type: database, size: small, count: 1}
+  - {type: load_balancer, count: 1}
+  - {type: data_transfer, gb: 300}
