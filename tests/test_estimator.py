@@ -38,3 +38,29 @@ def test_yaml_and_json_inputs(tmp_path):
 
 def test_report_has_disclaimer():
     assert "not a real quote" in e.format_report(e.estimate([], P))
+
+
+import json as _json
+import pytest as _pytest
+
+
+def test_negative_and_bad_values_rejected():
+    import estimator
+    prices = estimator.load_prices()
+    for item in ({"type": "storage", "tier": "standard", "gb": -5},
+                 {"type": "compute", "size": "small", "count": "two"},
+                 "not-a-dict"):
+        with _pytest.raises(ValueError):
+            estimator.cost_item(item, prices)
+
+
+def test_cli_reports_clean_errors(tmp_path):
+    import estimator
+    bad = tmp_path / "r.json"
+    bad.write_text(_json.dumps({"nope": []}))
+    with _pytest.raises(SystemExit) as e:
+        estimator.main([str(bad)])
+    assert e.value.code == 1
+    with _pytest.raises(SystemExit) as e:
+        estimator.main([str(tmp_path / "missing.json")])
+    assert e.value.code == 1

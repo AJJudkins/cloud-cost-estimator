@@ -22,7 +22,12 @@ def load_prices(path=DEFAULT_PRICES):
 
 def cost_item(item, prices):
     """Return (description, monthly cost) for one resource."""
+    if not isinstance(item, dict):
+        raise ValueError(f"resource must be a mapping, got {item!r}")
     t = item.get("type")
+    for k in ("count", "gb", "hours_per_month"):
+        if k in item and (isinstance(item[k], bool) or not isinstance(item[k], (int, float)) or item[k] < 0):
+            raise ValueError(f"invalid resource {item}: '{k}' must be a non-negative number")
     hrs = item.get("hours_per_month", prices["hours_per_month"])
     n = item.get("count", 1)
     try:
@@ -61,8 +66,11 @@ def main(argv=None):
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     try:
-        result = estimate(load_file(a.resources)["resources"], load_prices(a.prices))
-    except (ValueError, KeyError) as e:
+        data = load_file(a.resources)
+        if not isinstance(data, dict) or not isinstance(data.get("resources"), list):
+            raise ValueError("input must contain a top-level 'resources' list")
+        result = estimate(data["resources"], load_prices(a.prices))
+    except (OSError, ValueError, KeyError, ImportError) as e:
         ap.exit(1, f"error: {e}\n")
     result["disclaimer"] = DISCLAIMER
     print(json.dumps(result, indent=2) if a.json else format_report(result))

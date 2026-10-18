@@ -1,5 +1,7 @@
 # cloud-cost-estimator
 
+[![CI](https://github.com/AJJudkins/cloud-cost-estimator/actions/workflows/ci.yml/badge.svg)](https://github.com/AJJudkins/cloud-cost-estimator/actions/workflows/ci.yml)
+
 A small Python CLI that estimates **monthly cloud cost** from a YAML or JSON list of resources.
 
 > **Example prices only.** The bundled `data/prices.json` contains made-up, illustrative numbers. It is **not** real pricing and **not** a quote from any cloud provider. Replace it with your own figures for real planning.
@@ -52,6 +54,18 @@ NOTE: uses example prices only. This is not a real quote.
 
 ## What it demonstrates
 Cloud cost awareness (FinOps basics), config-driven design, data validation with clear errors, and unit tests for calculations.
+
+## Hardening notes
+- Resource values are validated (counts, GB and hours must be non-negative numbers) and bad input exits with code 1 and a clear message.
+- The default price table is read from `data/prices.json` next to the script, so use an editable install for the console script: `pip install -e ".[yaml]"` then `cloud-cost-estimator resources.example.yaml`, or pass your own `--prices` file.
+- YAML input needs the optional `pyyaml` extra; JSON works with no dependencies.
+
+## Security and testing status
+
+- **Safety:** offline and read-only: it only reads the resource and price files you give it, makes no API calls and needs no cloud credentials.
+- **Tested:** cost math, input validation and CLI errors on the bundled example prices.
+- **Not tested:** accuracy against any real cloud bill or price list (prices are examples, not quotes), other pricing models (spot, reserved, tiers), and non-Linux platforms.
+- See [SECURITY.md](SECURITY.md).
 
 ## License
 MIT
